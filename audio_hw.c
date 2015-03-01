@@ -39,8 +39,7 @@
 #include <tinyalsa/asoundlib.h>
 
 #include <audio_utils/resampler.h>
-
-#include "audio_route.h"
+#include <audio_route/audio_route.h>
 
 #define PCM_CARD 0
 #define PCM_CARD_SPDIF 1
@@ -463,7 +462,7 @@ static void select_devices(struct audio_device *adev)
     const char *input_route = NULL;
     int new_route_id;
 
-    reset_mixer_state(adev->ar);
+    audio_route_reset(adev->ar);
 
     enable_hdmi_audio(adev, adev->out_device & AUDIO_DEVICE_OUT_AUX_DIGITAL);
 
@@ -510,7 +509,7 @@ static void select_devices(struct audio_device *adev)
     if (input_route)
         audio_route_apply_path(adev->ar, input_route);
 
-    update_mixer_state(adev->ar);
+    audio_route_update_mixer(adev->ar);
 }
 
 static void force_non_hdmi_out_standby(struct audio_device *adev)
@@ -1611,7 +1610,7 @@ static int adev_open(const hw_module_t* module, const char* name,
     adev->hw_device.close_input_stream = adev_close_input_stream;
     adev->hw_device.dump = adev_dump;
 
-    adev->ar = audio_route_init();
+    adev->ar = audio_route_init(MIXER_CARD, NULL);
     adev->input_source = AUDIO_SOURCE_DEFAULT;
     /* adev->cur_route_id initial value is 0 and such that first device
      * selection is always applied by select_devices() */

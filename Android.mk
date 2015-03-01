@@ -19,13 +19,12 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := audio.primary.$(TARGET_DEVICE)
 LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
 LOCAL_SRC_FILES := \
-	audio_hw.c \
-	audio_route.c
+	audio_hw.c
 LOCAL_C_INCLUDES += \
-	external/tinyalsa/include \
-	external/expat/lib \
-	$(call include-path-for, audio-utils)
-LOCAL_SHARED_LIBRARIES := liblog libcutils libtinyalsa libaudioutils libexpat
+	external/tinyalsa/include
+	$(call include-path-for, audio-utils) \
+	$(call include-path-for, audio-route)
+LOCAL_SHARED_LIBRARIES := liblog libcutils libtinyalsa libaudioutils libaudioroute
 LOCAL_MODULE_TAGS := optional
 
 ifeq ($(strip $(BOARD_USE_ALP_AUDIO)),true)
